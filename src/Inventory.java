@@ -4,61 +4,52 @@ import java.util.List;
 
 public class Inventory {
 
-    private List guitars;
+    private List inventory;
 
     public Inventory(){
-        guitars = new LinkedList();
+        inventory = new LinkedList();
     }
 
-    public void addGuitar(String serialNumber, double price, Builder builder, String model,
-                          Type type,  Wood backWood, Wood topWood){
-        Guitar guitar = new Guitar(serialNumber,price,builder,model,type,backWood,topWood);
-        guitars.add(guitar);
+    public void addInstrument(String serialNumber, double price, InstrumentSpec spec){
+        Instrument instrument = null;
+        if(spec instanceof GuitarSpec){
+            instrument = new Guitar(serialNumber, price, (GuitarSpec)spec);
+        }
+        else if (spec instanceof MandalinSpec){
+            instrument = new Mandalin(serialNumber, price, (MandalinSpec)spec);
+        }
+        inventory.add(instrument);
+
     }
 
-
-//    public Guitar getGuitar(String serialNumber){
-//        for(Iterator i = guitarSpecs.iterator(); ((Iterator) i).hasNext();){
-//            Guitar guitar = (Guitar)i.next();
-//            if(guitar.getSerialNumber().equals(serialNumber)){
-//                return guitar;
-//            }
-//        }
-//        return null;
-//    }
+    public Instrument get(String serialNumber){
+        for(Iterator i = inventory.iterator(); i.hasNext();){
+            Instrument instrument = (Instrument)i.next();
+            if(instrument.getSerialNumber().equals(serialNumber)){
+                return instrument;
+            }
+        }
+        return null;
+    }
 
     public List search(GuitarSpec searchSpec) {
         List matchingGuitars = new LinkedList();
-        for (Iterator i = guitars.iterator(); i.hasNext(); ) {
+        for (Iterator i = inventory.iterator(); i.hasNext(); ) {
             Guitar guitar = (Guitar) i.next();
-            //ignore serialNumber since it is unique
-            //ignore price since it is unique
-
-            Builder builder = searchSpec.getBuilder();
-            if((builder !=null) && (!builder.equals("")) &&
-                    (!builder.equals(guitar.getGuitarSpec().getBuilder())))
-                continue;
-
-            String model = searchSpec.getModel();
-            if ((model != null) && (!model.equals("")) &&
-                    (!model.equals(guitar.getGuitarSpec().getModel())))
-                continue;
-
-            Type type = searchSpec.getType();
-            if ((type != null) && (!searchSpec.equals("")) &&
-                    (!type.equals(guitar.getGuitarSpec().getType())))
-                continue;
-
-            Wood backWood = searchSpec.getBackWood();
-            if ((backWood != null) && (!backWood.equals("")) &&
-                    (!backWood.equals(guitar.getGuitarSpec().getBackWood())))
-                continue;
-            Wood topWood = searchSpec.getBackWood();
-            if ((topWood != null) && (!topWood.equals("")) &&
-                    (!topWood.equals(guitar.getGuitarSpec().getTopWood())))
-                continue;
-            matchingGuitars.add(guitar);
+            if (guitar.getSpec().matches((searchSpec))) {
+                matchingGuitars.add(guitar);
+            }
         }
         return matchingGuitars;
+    }
+    public List search(MandalinSpec searchSpec) {
+        List matchingMandalins = new LinkedList();
+        for (Iterator i = inventory.iterator(); i.hasNext(); ) {
+            Mandalin mandalin = (Mandalin) i.next();
+            if (mandalin.getSpec().matches((searchSpec))) {
+                matchingMandalins.add(mandalin);
+            }
+        }
+        return matchingMandalins;
     }
 }

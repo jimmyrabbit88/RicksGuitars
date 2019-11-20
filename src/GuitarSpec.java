@@ -1,59 +1,27 @@
-public class GuitarSpec {
+public class GuitarSpec extends InstrumentSpec {
+        private int numStrings;
 
-    private Builder builder;
-    private String model;
-    private Type type;
-    private Wood backWood;
-    private Wood topWood;
+        public GuitarSpec(Builder builder, String model, Type type, int numStrings, Wood backwood, Wood topwood){
+            super(builder, model, type, backwood, topwood);
+            this.numStrings = numStrings;
+        }
+
+        public int getNumStrings() { return numStrings; }
+
+        @Override
+        public boolean matches(InstrumentSpec otherSpec) {
+            if(!super.matches(otherSpec)){
+                return false;
+            }
+            if(!(otherSpec instanceof GuitarSpec)){
+                return false;
+            }
+            GuitarSpec spec = (GuitarSpec)otherSpec;
+            if(numStrings != spec.numStrings){
+                return false;
+            }
+            return true;
+        }
 
 
-    public GuitarSpec(Builder builder, String model, Type type, Wood backWood, Wood topWood) {
-        this.builder = builder;
-        this.model = model;
-        this.type = type;
-        this.backWood = backWood;
-        this.topWood = topWood;
-    }
-
-
-
-    public Builder getBuilder() {
-        return builder;
-    }
-
-    public void setBuilder(Builder builder) {
-        this.builder = builder;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    public Wood getBackWood() {
-        return backWood;
-    }
-
-    public void setBackWood(Wood backWood) {
-        this.backWood = backWood;
-    }
-
-    public Wood getTopWood() {
-        return topWood;
-    }
-
-    public void setTopWood(Wood topWood) {
-        this.topWood = topWood;
-    }
 }
